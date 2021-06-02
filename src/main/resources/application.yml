@@ -1,0 +1,54 @@
+spring:
+  profiles:
+    active: @active@
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    # 返回给前端的 JSON 去除 null 值属性
+    default-property-inclusion: non_null
+  datasource:
+    hikari:
+      # 连接超时时间，单位毫秒，默认 30 秒。
+      connection-timeout: 30000
+      # 自动提交，默认 true。
+      auto-commit: true
+      # 连接最大存活时间，单位毫秒，默认 30 秒。
+      max-lifetime: 1800000
+      # 连接测试查询
+      connection-test-query: SELECT 1
+      # 空闲连接数大于最大连接数且空闲时间超过该值 才会被释放
+      # 单位毫秒，默认 10 秒。
+      idle-timeout: 10000
+      # 最小空闲连接数
+      minimum-idle: 10
+      # 最大连接数
+      maximum-pool-size: 10
+  redis:
+    # 连接超时时间，单位毫秒。
+    timeout: 1000
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      insert-strategy: not_null
+      update-strategy: not_null
+      select-strategy: not_empty
+      # 逻辑删除实体字段名
+      logic-delete-field: state
+      # 逻辑删除配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    # 开启自动驼峰命名规则映射 表字段名`a_b`映射为Java属性`aB`
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:com/example/mapper/*mapper.xml
+  type-aliases-package: com.example.entity
+
+# 自定义变量
+
+# MySQL 参数
+# useAffectedRows 使用受影响行数替代匹配行数返回
+# serverTimezone 默认 UTC 时区
+# allowMultiQueries 默认 false，SQL 语句可携带分号。
+# allowPublicKeyRetrieval 默认 false，允许客户端从服务器获取公钥。
+mysql-param: useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&failOverReadOnly=false&useAffectedRows=true&serverTimezone=GMT&allowMultiQueries=true&allowPublicKeyRetrieval=true
