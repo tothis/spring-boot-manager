@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonConfig {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer builderCustomizer() {
+    Jackson2ObjectMapperBuilderCustomizer builderCustomizer() {
         return builder -> {
             // JS 数字精度小于 Java long，返回数据时把long类型属性转为字符串类型Jackson。
             builder.serializerByType(long.class, ToStringSerializer.instance);

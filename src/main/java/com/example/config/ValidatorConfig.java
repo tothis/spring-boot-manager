@@ -15,7 +15,7 @@ import javax.validation.Validator;
 @Configuration
 public class ValidatorConfig {
     @Bean
-    public Validator validator() {
+    Validator validator() {
         return Validation.byProvider(HibernateValidator.class)
             .configure()
             /**

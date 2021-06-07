@@ -1,7 +1,7 @@
 package com.example.util;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.entity.common.PageEntity;
+import com.example.entity.common.PageResult;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
@@ -32,8 +32,8 @@ public class BeanUtil extends BeanUtils {
         return result;
     }
 
-    public <T> PageEntity<T> toPage(final Page page, final Class<T> type) {
+    public <T> PageResult<T> toPage(final Page page, final Class<T> type) {
         final List<T> list = BeanUtil.convertList(page.getRecords(), type);
-        return new PageEntity<>(list, page.getTotal());
+        return new PageResult<>(list, page.getTotal());
     }
 }

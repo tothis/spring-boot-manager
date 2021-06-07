@@ -45,6 +45,6 @@ public class BaseEntity implements Serializable {
     /**
      * 状态 0:正常 1:已删除
      */
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, select = false)
     private Byte state;
 }

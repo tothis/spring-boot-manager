@@ -67,7 +67,7 @@ public final class RedisUtil {
      *
      * @param keys -
      */
-    public static <K> long delete(final Collection<K> keys) {
+    public static long delete(final Collection<String> keys) {
         return template.delete(keys);
     }
 

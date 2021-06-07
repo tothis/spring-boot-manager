@@ -1,7 +1,7 @@
 package com.example.controller;
 
-import com.example.entity.common.PageEntity;
-import com.example.entity.common.PageQueryEntity;
+import com.example.entity.common.PageQuery;
+import com.example.entity.common.PageResult;
 import com.example.entity.vo.dict.DictListResponse;
 import com.example.entity.vo.dict.DictSaveRequest;
 import com.example.entity.vo.dict.DictSelectResponse;
@@ -53,7 +53,7 @@ public class DictController {
      * @return -
      */
     @PostMapping("page")
-    PageEntity<DictListResponse> page(@Valid @RequestBody final PageQueryEntity r) {
+    PageResult<DictListResponse> page(@Valid @RequestBody final PageQuery r) {
         return service.selectPage(r);
     }
 

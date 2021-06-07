@@ -11,7 +11,7 @@
  Target Server Version : 80023
  File Encoding         : 65001
 
- Date: 03/06/2021 20:30:00
+ Date: 06/06/2021 20:30:00
 */
 
 SET NAMES utf8mb4;
@@ -36,7 +36,18 @@ CREATE TABLE `dict`
 ) COMMENT = '字典';
 
 -- ----------------------------
--- Records of dict
+-- Table structure for log
 -- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log`
+(
+    `id`          bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+    `path`        varchar(255)    NULL DEFAULT '' COMMENT '路径',
+    `method`      char(6)         NULL DEFAULT '' COMMENT '方法',
+    `param`       text            NULL COMMENT '参数',
+    `create_by`   bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建者',
+    `create_time` datetime(0)     NULL DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE
+) COMMENT = '日志';
 
 SET FOREIGN_KEY_CHECKS = 1;

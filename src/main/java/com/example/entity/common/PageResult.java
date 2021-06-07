@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class PageEntity<T> {
+public class PageResult<T> {
     private final List<T> data;
     private final long count;
 }

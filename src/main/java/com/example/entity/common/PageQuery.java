@@ -10,20 +10,20 @@ import javax.validation.constraints.NotNull;
  * @author 李磊
  */
 @Data
-public class PageQueryEntity {
+public class PageQuery {
 
     /**
      * 开始页数
      */
-    @Min(value = 1, message = "开始页数必须大于0")
+    @Min(value = 1, message = "开始页数必须大于 0")
     @NotNull(message = "开始页数必填")
-    private Long pageNum;
+    private Long pageNumber;
 
     /**
      * 每页数据数量
      */
-    @Min(value = 1, message = "每页数据数量最小为1")
-    @Max(value = 1000, message = "每页数据数量最大为1000")
+    @Min(value = 1, message = "每页数据数量最小为 1")
+    @Max(value = 1000, message = "每页数据数量最大为 1000")
     @NotNull(message = "每页数据数量必填")
     private Long pageSize;
 
@@ -32,6 +32,6 @@ public class PageQueryEntity {
      */
     public void calcPageNum() {
         // 计算数据库开始页数
-        pageNum = (pageNum - 1) * pageSize;
+        pageNumber = (pageNumber - 1) * pageSize;
     }
 }

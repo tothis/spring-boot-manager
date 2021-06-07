@@ -15,8 +15,8 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 public class RedisConfig {
 
     @Bean
-    public RedisTemplate template(RedisConnectionFactory factory) {
-        RedisTemplate redisTemplate = new RedisTemplate();
+    RedisTemplate template(final RedisConnectionFactory factory) {
+        final RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(factory);
         // 设置 key 序列化
         redisTemplate.setKeySerializer(RedisSerializer.string());

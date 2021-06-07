@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.RedisKeyConstant;
 import com.example.entity.Dict;
-import com.example.entity.common.PageEntity;
-import com.example.entity.common.PageQueryEntity;
+import com.example.entity.common.PageQuery;
+import com.example.entity.common.PageResult;
 import com.example.entity.vo.dict.DictListResponse;
 import com.example.entity.vo.dict.DictSaveRequest;
 import com.example.entity.vo.dict.DictSelectResponse;
@@ -56,8 +56,8 @@ public class DictService extends ServiceImpl<DictMapper, Dict> {
      * @param r -
      * @return -
      */
-    public PageEntity<DictListResponse> selectPage(final PageQueryEntity r) {
-        final Page<Dict> page = baseMapper.selectPage(new Page<>(r.getPageNum()
+    public PageResult<DictListResponse> selectPage(final PageQuery r) {
+        final Page<Dict> page = baseMapper.selectPage(new Page<>(r.getPageNumber()
             , r.getPageSize()), null);
         return BeanUtil.toPage(page, DictListResponse.class);
     }
