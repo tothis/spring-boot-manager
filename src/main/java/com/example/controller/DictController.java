@@ -22,7 +22,7 @@ public class DictController {
 
     private final DictService service;
 
-    public DictController(final DictService service) {
+    DictController(final DictService service) {
         this.service = service;
     }
 

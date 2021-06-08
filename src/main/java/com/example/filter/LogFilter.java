@@ -1,6 +1,7 @@
 package com.example.filter;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.example.entity.Log;
 import com.example.mapper.LogMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +34,10 @@ import java.util.Set;
 @Component
 public class LogFilter extends OncePerRequestFilter {
 
-    private final LogMapper logMapper;
+    private final LogMapper mapper;
 
-    public LogFilter(final LogMapper logMapper) {
-        this.logMapper = logMapper;
+    public LogFilter(final LogMapper mapper) {
+        this.mapper = mapper;
     }
 
     /**
@@ -62,9 +63,8 @@ public class LogFilter extends OncePerRequestFilter {
                     .append(value).append('&');
             }
         }
-        final int length = builder.length();
-        // 删除最后一个 & 字符
-        return (length > 0 ? builder.deleteCharAt(length - 1) : builder).toString();
+        removeLastChar(builder);
+        return (builder).toString();
     }
 
     /**
@@ -75,16 +75,27 @@ public class LogFilter extends OncePerRequestFilter {
         for (final Part part : request.getParts()) {
             // 不记录文件参数
             if (part.getContentType() == null) {
-                final long size = part.getSize();
                 try (final InputStream in = part.getInputStream()) {
                     builder.append(part.getName()).append('=')
                         .append(IoUtil.read(in, StandardCharsets.UTF_8)).append('&');
                 }
             }
         }
+        removeLastChar(builder);
+        return (builder).toString();
+    }
+
+    /**
+     * 删除最后一个字符
+     *
+     * @param builder -
+     * @return -
+     */
+    private static void removeLastChar(StringBuilder builder) {
         final int length = builder.length();
-        // 删除最后一个 & 字符
-        return (length > 0 ? builder.deleteCharAt(length - 1) : builder).toString();
+        if (length > 0) {
+            builder.deleteCharAt(length - 1);
+        }
     }
 
     @Override
@@ -93,36 +104,33 @@ public class LogFilter extends OncePerRequestFilter {
 
         final String type = request.getContentType();
         String param = null;
+
+        BodyServletRequestWrapper bodyRequest = null;
+
         if (type == null) {
             // URL 参数
             param = request.getQueryString();
-            chain.doFilter(request, response);
-        } else if (type.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) > -1) {
+        }
+        // JSON 表单参数
+        else if (type.indexOf(MediaType.APPLICATION_JSON_VALUE) > -1) {
+            bodyRequest = new BodyServletRequestWrapper(request);
+            param = bodyParam(bodyRequest);
+        }
+        // form 表单参数
+        else if (type.equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
+            param = formParam(request);
+        }
+        // multipart form
+        else if (type.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) > -1) {
             param = multipartFormParam(request);
-            chain.doFilter(request, response);
-        } else {
-            switch (type) {
-                // form 表单参数
-                case MediaType.APPLICATION_FORM_URLENCODED_VALUE:
-                    param = formParam(request);
-                    chain.doFilter(request, response);
-                    break;
-                // JSON 表单参数
-                case MediaType.APPLICATION_JSON_VALUE:
-                    final BodyServletRequestWrapper paramsRequest = new BodyServletRequestWrapper(request);
-                    param = bodyParam(paramsRequest);
-                    chain.doFilter(paramsRequest, response);
-                    break;
-                default:
-                    break;
-            }
         }
 
+        chain.doFilter(ObjectUtil.defaultIfNull(bodyRequest, request), response);
         final Log entity = new Log();
         entity.setMethod(request.getMethod());
         entity.setPath(request.getServletPath());
         entity.setParam(param);
-        logMapper.insert(entity);
+        mapper.insert(entity);
     }
 }
 
@@ -132,7 +140,9 @@ class BodyServletRequestWrapper extends HttpServletRequestWrapper {
 
     public BodyServletRequestWrapper(final HttpServletRequest request) throws IOException {
         super(request);
-        body = StreamUtils.copyToByteArray(request.getInputStream());
+        try (final ServletInputStream in = request.getInputStream()) {
+            body = StreamUtils.copyToByteArray(in);
+        }
     }
 
     @Override
